@@ -1,0 +1,161 @@
+---
+title: "Which Disciple Are You Most Like?"
+format:
+  html:
+    theme: styles.scss
+    toc: false
+---
+
+<div id="quiz"></div>
+<div id="result" style="margin-top: 20px; font-weight: bold;"></div>
+
+```{=html}
+<script>
+const quizData = [
+  {
+    question: "What's your go-to vibe in a crisis?",
+    options: {
+      "Take charge and make a plan": ["Peter", "James"],
+      "Find a quiet space and think it through": ["Mary of Bethany", "John"],
+      "Ask a bunch of questions": ["Thomas", "Philip"],
+      "Roll up my sleeves and help": ["Martha", "Andrew"],
+      "Show up and stay loyal": ["Mary Magdalene", "Joanna"],
+      "Stay calm and speak truth": ["Nathanael", "Matthew"],
+      "Turn my energy into action": ["Simon the Zealot"]
+    }
+  },
+  {
+    question: "In a group project, you're the one who...",
+    options: {
+      "Leads the charge and keeps it moving": ["Peter", "James"],
+      "Quietly connects people and supports behind the scenes": ["Andrew", "Joanna"],
+      "Handles the details and double-checks everything": ["Matthew", "Philip"],
+      "Keeps morale up and vibes positive": ["John", "Mary Magdalene"],
+      "Keeps the planning on track": ["Martha", "Nathanael"],
+      "Throws out the big creative ideas": ["Mary of Bethany", "Simon the Zealot"]
+    }
+  },
+  {
+    question: "How do you feel closest to God?",
+    options: {
+      "Doing something practical and helpful": ["Martha", "Peter"],
+      "Soaking in quiet beauty or reflection": ["Mary of Bethany", "John"],
+      "Learning something new or asking deep questions": ["Philip", "Matthew"],
+      "Wrestling with doubts and honesty": ["Thomas", "Nathanael"],
+      "Being there for people who are hurting": ["Mary Magdalene", "Joanna"],
+      "Fighting for a cause I care about": ["Simon the Zealot", "James"]
+    }
+  },
+  {
+    question: "What kind of people do you click with?",
+    options: {
+      "Natural leaders": ["Peter", "James"],
+      "Quiet deep thinkers": ["Thomas", "Mary of Bethany"],
+      "Loyal ride-or-dies": ["John", "Mary Magdalene"],
+      "People who’ve been through stuff": ["Matthew", "Joanna"],
+      "Straight shooters": ["Nathanael", "Martha"],
+      "The kind and helpful types": ["Andrew", "Philip"]
+    }
+  },
+  {
+    question: "What’s your fail moment recovery style?",
+    options: {
+      "Own it and bounce back": ["Peter", "Thomas"],
+      "Feel down but keep going": ["Mary Magdalene", "John"],
+      "Quietly fix things if I can": ["Martha", "Andrew"],
+      "Reflect deeply, maybe journal about it": ["Mary of Bethany", "Nathanael"],
+      "Use it to make a comeback story": ["Simon the Zealot", "Matthew"]
+    }
+  },
+  {
+    question: "Your friends would say you...",
+    options: {
+      "Always step up when needed": ["Peter", "Martha"],
+      "Really *see* and listen to people": ["Mary of Bethany", "John"],
+      "Ask the most thoughtful questions": ["Thomas", "Philip"],
+      "Are always there when it counts": ["Mary Magdalene", "Joanna"],
+      "Keep it real and honest": ["Nathanael", "Matthew"],
+      "Bring the fire and the passion": ["Simon the Zealot", "James"]
+    }
+  },
+  {
+    question: "How do you love to help others?",
+    options: {
+      "Solving the problem": ["Philip", "Martha"],
+      "Just being present": ["John", "Mary Magdalene"],
+      "Introducing them to something meaningful": ["Andrew", "Peter"],
+      "Speaking encouragement or truth": ["Nathanael", "Matthew"],
+      "Giving what I can and opening doors": ["Joanna", "Mary of Bethany"],
+      "Shaking things up for good": ["Simon the Zealot", "James"]
+    }
+  },
+  {
+    question: "What gets you out of bed in the morning?",
+    options: {
+      "Big ideas that inspire me": ["Simon the Zealot", "Mary of Bethany"],
+      "Good conversations with real people": ["Thomas", "John"],
+      "Crossing things off my to-do list": ["Martha", "Philip"],
+      "Helping people feel at home": ["Andrew", "Joanna"],
+      "Watching people grow and change": ["Peter", "Matthew"]
+    }
+  },
+  {
+    question: "What’s a habit you're working on?",
+    options: {
+      "Chilling out and letting go of control": ["Peter", "Martha"],
+      "Speaking up when I have something to say": ["Andrew", "Mary of Bethany"],
+      "Letting go of the need to understand everything": ["Philip", "Thomas"],
+      "Remembering I don’t have to do it all": ["Joanna", "Mary Magdalene"],
+      "Being bold *and* kind": ["James", "Simon the Zealot"]
+    }
+  },
+  {
+    question: "What are you really chasing in your faith?",
+    options: {
+      "Living with purpose and direction": ["Peter", "Simon the Zealot"],
+      "Peace and closeness with God": ["John", "Mary of Bethany"],
+      "Truth that I can hold onto": ["Thomas", "Philip"],
+      "Healing and belonging": ["Mary Magdalene", "Joanna"],
+      "Becoming more grounded and humble": ["Matthew", "Nathanael"],
+      "Loving people through action": ["Martha", "Andrew"]
+    }
+  }
+];
+
+const quizDiv = document.getElementById("quiz");
+quizData.forEach((q, i) => {
+  const qContainer = document.createElement("div");
+  qContainer.innerHTML = `<p><strong>${i + 1}. ${q.question}</strong></p>`;
+  Object.entries(q.options).forEach(([text, disciples]) => {
+    const id = `q${i}_${text.replace(/\s+/g, "_")}`;
+    qContainer.innerHTML += `
+      <label>
+        <input type="radio" name="q${i}" value="${disciples.join(",")}">
+        ${text}
+      </label><br>
+    `;
+  });
+  quizDiv.appendChild(qContainer);
+});
+
+const submitBtn = document.createElement("button");
+submitBtn.textContent = "Get My Disciple Match";
+submitBtn.onclick = () => {
+  const result = {};
+  quizData.forEach((q, i) => {
+    const selected = document.querySelector(`input[name="q${i}"]:checked`);
+    if (selected) {
+      selected.value.split(",").forEach(name => {
+        name = name.trim();
+        result[name] = (result[name] || 0) + 1;
+      });
+    }
+  });
+  const sorted = Object.entries(result).sort((a, b) => b[1] - a[1]);
+  document.getElementById("result").innerHTML = sorted.length
+  ? `You are most like: <a href="./disciples/${sorted[0][0].toLowerCase().replace(/\\s+/g, '-')}.html" target="_blank">${sorted[0][0]}</a>`
+  : "Please answer all questions.";
+
+};
+quizDiv.appendChild(submitBtn);
+</script>
