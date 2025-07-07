@@ -153,7 +153,7 @@ submitBtn.onclick = () => {
   });
   const sorted = Object.entries(result).sort((a, b) => b[1] - a[1]);
   document.getElementById("result").innerHTML = sorted.length
-  ? `You are most like: <a href="./disciples/${sorted[0][0].toLowerCase().replace(/\\s+/g, '-')}.html" target="_blank">${sorted[0][0]}</a>`
+  ? `You are most like: <a href="./disciples/${sorted[0][0].toLowerCase().replace(/\s+/g, '-')}.html" target="_blank">${sorted[0][0]}</a>`
   : "Please answer all questions.";
 
 };
